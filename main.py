@@ -31,18 +31,30 @@ def get_online_stats(url: str) -> int:
 
 def write_online_stats_to_csv(game_name, online_stats):
     online_stats_data = {
-        'name' : f"{game_name}",
-        'player_count' : online_stats,
-        'time' : datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        "name" : f"{game_name}",
+        "player_count" : online_stats,
+        "time" : datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     }
     file = Path('online_stats.csv')
     df = pd.DataFrame([online_stats_data])
     df.to_csv('online_stats.csv', index=False, mode='a', header=not file.exists(), quoting=csv.QUOTE_NONNUMERIC)
 
 
-def main():
-    game_name, online_stats = get_online_stats("https://steamcommunity.com/app/730")
+def find_game_by_appid(name: str):
+    df = pd.read_csv("datasets/games_march2025_cleaned.csv")
+    match = df[df['name'] == name]
+    if not match.empty:
+        # print(match[['name','appid']])
+        url = f"https://steamcommunity.com/app/{match.iloc[0]['appid']}"
+        # print(url)
+    
+    game_name, online_stats = get_online_stats(url)
     write_online_stats_to_csv(game_name, online_stats)
+
+
+def main():
+    find_game_by_appid("Counter-Strike 2")
+
 
 if __name__ == "__main__":
     main()
