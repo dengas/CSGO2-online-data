@@ -8,7 +8,7 @@ from pathlib import Path
 import csv
 
 
-def get_online_stats(url: str) -> int:
+def get_online_stats(url: str) -> tuple[str, int]:
     try:
         options = Options()
         options.add_argument("--headless")
@@ -44,9 +44,7 @@ def find_game_by_appid(name: str):
     df = pd.read_csv("datasets/games_march2025_cleaned.csv")
     match = df[df['name'] == name]
     if not match.empty:
-        # print(match[['name','appid']])
         url = f"https://steamcommunity.com/app/{match.iloc[0]['appid']}"
-        # print(url)
     
     game_name, online_stats = get_online_stats(url)
     write_online_stats_to_csv(game_name, online_stats)
