@@ -1,1 +1,1 @@
-# CSGO2-online-data
+# Steam-online-data
